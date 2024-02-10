@@ -20,3 +20,4 @@ D:\hny\obj\Debug\net8.0\refint\hny.dll
 D:\hny\obj\Debug\net8.0\hny.pdb
 D:\hny\obj\Debug\net8.0\hny.genruntimeconfig.cache
 D:\hny\obj\Debug\net8.0\ref\hny.dll
+D:\hny\obj\Debug\net8.0\hny.sourcelink.json

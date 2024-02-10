@@ -41,7 +41,7 @@ public static class LetterDomain
         Vector2 target = letter.path[letter.pathIndex];
         // System.Console.WriteLine(letter.pos);
         // System.Console.WriteLine(target);
-        if (Vector2.DistanceSquared(target, letter.pos) <= 10f)
+        if (Vector2.DistanceSquared(target, letter.pos) <= 1f)
         {
             letter.pos = letter.path[letter.pathIndex];
             letter.pathIndex += 1;

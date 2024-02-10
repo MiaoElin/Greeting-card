@@ -9,12 +9,15 @@ public static class Program
         lightPink.R = 169;
         lightPink.G = 23;
         lightPink.B = 23;
-        lightPink.A =255;
+        lightPink.A = 255;
         Raylib.InitWindow(720, 888, "新年666888");
-        Raylib.SetTargetFPS(150);
+        // Raylib.SetTargetFPS(120);
         LetterRepo leRepo = new LetterRepo();
         LetterEntity backGround = new LetterEntity(new Vector2[] { }, "");
         backGround.timer = 1f;
+        backGround.color = lightPink;
+        float restDT = 0;
+        const float FIXED_INTERVAL = 0.005f;
         LetterEntity H = LetterDomain.SpawnLetter(leRepo, new Vector2(0, -100), new Vector2[] { new Vector2(100, 200) }, 1, 300, Color.Black, "H", 120);
         LetterEntity A = LetterDomain.SpawnLetter(leRepo, new Vector2(720, 450), new Vector2[] { new Vector2(200, 200) }, 1, 400, Color.Black, "A", 120);
         LetterEntity p = LetterDomain.SpawnLetter(leRepo, new Vector2(0, -100), new Vector2[] { new Vector2(300, 200) }, 1, 300, Color.Black, "P", 120);
@@ -36,43 +39,36 @@ public static class Program
         {
             float dt = Raylib.GetFrameTime();
             Raylib.BeginDrawing();
-            backGround.timer -= dt;
-            if (backGround.timer > 0)
+            restDT += dt;
+            if (restDT <= FIXED_INTERVAL)
             {
-                // System.Console.WriteLine(backGround.timer);s
-                Raylib.ClearBackground(Color.White);
-                if (backGround.timer >= 0.5f)
-                {
-                    Raylib.DrawText("RED", 275, 350, 100, lightPink);
-
-                }
-                else
-                {
-                    Raylib.DrawCircle(360, 450, 10/backGround.timer, lightPink);
-                    // Raylib.DrawCircle(300, 400, 50, Color.Red);
-                    // Raylib.DrawCircle(300, 400, 100, Color.Red);
-                    // Raylib.DrawCircle(300, 400, 150, Color.Red);
-                    // Raylib.DrawCircle(300, 400, 200, Color.Red);
-                    // Raylib.DrawCircle(300, 400, 300, Color.Red);
-                    // Raylib.DrawCircle(300, 400, 400, Color.Red);
-                    // Raylib.DrawCircle(300, 400, 500, Color.Red);
-                }
-
+                System.Console.WriteLine("one");
+                FixedTick(backGround, restDT, leRepo);
+                restDT = 0;
             }
-            if (backGround.timer <= 0)
+            else
             {
-                backGround.timer = 0;
-                Raylib.ClearBackground(lightPink);
-                leRepo.Forech((LetterEntity letter) =>
-                {
-                    LetterDomain.Move(letter, dt);
-                    LetterDomain.Draw(letter);
-                });
+                while (restDT >= FIXED_INTERVAL)
+                {   
+                    // System.Console.WriteLine("fixed");
+                    FixedTick(backGround, FIXED_INTERVAL, leRepo);
+                    restDT -= FIXED_INTERVAL;
+                }
             }
 
             Raylib.EndDrawing();
         }
         Raylib.CloseWindow();
+
+
+        {
+
+            float dt = Raylib.GetFrameTime(); // 0.01 0.0001
+                                              // PreTick: Input
+                                              // 0.01 + 0.02 = 0.0300000004
+                                              // FixedTick
+
+        }
     }
     public static void Copy()
     {
@@ -90,5 +86,34 @@ public static class Program
         // LetterEntity e2 = LetterDomain.SpawnLetter(leRepo, new Vector2(0, 900), new Vector2[] { new Vector2(250, 500) }, 3, 300, Color.Black, "E", 100);
         // LetterEntity a = LetterDomain.SpawnLetter(leRepo, new Vector2(720, 450), new Vector2[] { new Vector2(350, 500) }, 3, 300, Color.Black, "A", 100);
         // LetterEntity r = LetterDomain.SpawnLetter(leRepo, new Vector2(600, 900), new Vector2[] { new Vector2(450, 500) }, 3, 300, Color.Black, "R", 100);
+    }
+    public static void FixedTick(LetterEntity backGround, float dt, LetterRepo leRepo)
+    {
+        backGround.timer -= dt;
+        if (backGround.timer > 0)
+        {
+            // System.Console.WriteLine(backGround.timer);s
+            Raylib.ClearBackground(Color.White);
+            if (backGround.timer >= 0.5f)
+            {
+                Raylib.DrawText("RED", 275, 350, 100, Color.Red);
+
+            }
+            else
+            {
+                Raylib.DrawCircle(360, 450, 10 / backGround.timer, Color.Red);
+            }
+
+        }
+        if (backGround.timer <= 0)
+        {
+            backGround.timer = 0;
+            Raylib.ClearBackground(backGround.color);
+            leRepo.Forech((LetterEntity letter) =>
+            {
+                LetterDomain.Move(letter, dt);
+                LetterDomain.Draw(letter);
+            });
+        }
     }
 }
