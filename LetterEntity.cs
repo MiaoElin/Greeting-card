@@ -10,6 +10,7 @@ public class LetterEntity{
     public int pathIndex;
     public string text;
     public int fontSize;
+    public bool isInEasing;
     public LetterEntity(Vector2 []path,string  text){
         this.path=path;
         this.text=text;

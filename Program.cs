@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using Raylib_cs;
+using GameFunctions;
 
 public static class Program
 {
@@ -18,6 +19,8 @@ public static class Program
         backGround.color = lightPink;
         float restDT = 0;
         const float FIXED_INTERVAL = 0.005f;
+        float time = 0;
+        float duration = 2;
         LetterEntity H = LetterDomain.SpawnLetter(leRepo, new Vector2(0, -100), new Vector2[] { new Vector2(100, 200) }, 1, 300, Color.Black, "H", 120);
         LetterEntity A = LetterDomain.SpawnLetter(leRepo, new Vector2(720, 450), new Vector2[] { new Vector2(200, 200) }, 1, 400, Color.Black, "A", 120);
         LetterEntity p = LetterDomain.SpawnLetter(leRepo, new Vector2(0, -100), new Vector2[] { new Vector2(300, 200) }, 1, 300, Color.Black, "P", 120);
@@ -27,7 +30,8 @@ public static class Program
         LetterEntity n = LetterDomain.SpawnLetter(leRepo, new Vector2(-100, 200), new Vector2[] { new Vector2(0, 100), new Vector2(200, 400) }, 2, 200, Color.Black, "N", 120);
         LetterEntity e = LetterDomain.SpawnLetter(leRepo, new Vector2(300, -100), new Vector2[] { new Vector2(300, 400) }, 2, 200, Color.Black, "E", 120);
         LetterEntity w = LetterDomain.SpawnLetter(leRepo, new Vector2(720, 300), new Vector2[] { new Vector2(400, 400) }, 2, 300, Color.Black, "W", 120);
-        LetterEntity xx = LetterDomain.SpawnLetter(leRepo, new Vector2(720, 300), new Vector2[] { new Vector2(600, 300), new Vector2(500, 500), new Vector2(500, 325), new Vector2(500, 475), new Vector2(500, 350), new Vector2(500, 450), new Vector2(500, 375), new Vector2(500, 425), new Vector2(500, 390), new Vector2(500, 410), new Vector2(500, 400) }, 4, 300, Color.Black, "<", 120);
+        // LetterEntity xx = LetterDomain.SpawnLetter(leRepo, new Vector2(720, 300), new Vector2[] { new Vector2(600, 300), new Vector2(500, 500), new Vector2(500, 325), new Vector2(500, 475), new Vector2(500, 350), new Vector2(500, 450), new Vector2(500, 375), new Vector2(500, 425), new Vector2(500, 390), new Vector2(500, 410), new Vector2(500, 400) }, 4, 300, Color.Black, "<", 120);
+        LetterEntity xx = LetterDomain.SpawnLetter(leRepo, new Vector2(720, 300), new Vector2[] { new Vector2(600, 300),new Vector2 (500,500),new Vector2 (500,325) }, 4, 300, Color.Black, "<", 120);
         LetterEntity y2 = LetterDomain.SpawnLetter(leRepo, new Vector2(300, 900), new Vector2[] { new Vector2(150, 600) }, 3, 300, Color.Black, "Y", 100);
         LetterEntity e2 = LetterDomain.SpawnLetter(leRepo, new Vector2(0, 900), new Vector2[] { new Vector2(250, 600) }, 3, 300, Color.Black, "E", 100);
         LetterEntity a = LetterDomain.SpawnLetter(leRepo, new Vector2(720, 450), new Vector2[] { new Vector2(350, 600) }, 3, 300, Color.Black, "A", 100);
@@ -42,16 +46,16 @@ public static class Program
             restDT += dt;
             if (restDT <= FIXED_INTERVAL)
             {
-                System.Console.WriteLine("one");
-                FixedTick(backGround, restDT, leRepo);
+                // System.Console.WriteLine("one");
+                FixedTick(backGround, restDT, leRepo, xx,ref time, duration);
                 restDT = 0;
             }
             else
             {
                 while (restDT >= FIXED_INTERVAL)
-                {   
+                {
                     // System.Console.WriteLine("fixed");
-                    FixedTick(backGround, FIXED_INTERVAL, leRepo);
+                    FixedTick(backGround, FIXED_INTERVAL, leRepo, xx, ref time, duration);
                     restDT -= FIXED_INTERVAL;
                 }
             }
@@ -87,7 +91,7 @@ public static class Program
         // LetterEntity a = LetterDomain.SpawnLetter(leRepo, new Vector2(720, 450), new Vector2[] { new Vector2(350, 500) }, 3, 300, Color.Black, "A", 100);
         // LetterEntity r = LetterDomain.SpawnLetter(leRepo, new Vector2(600, 900), new Vector2[] { new Vector2(450, 500) }, 3, 300, Color.Black, "R", 100);
     }
-    public static void FixedTick(LetterEntity backGround, float dt, LetterRepo leRepo)
+    public static void FixedTick(LetterEntity backGround, float dt, LetterRepo leRepo, LetterEntity xx, ref float time, float duration)
     {
         backGround.timer -= dt;
         if (backGround.timer > 0)
@@ -114,6 +118,24 @@ public static class Program
                 LetterDomain.Move(letter, dt);
                 LetterDomain.Draw(letter);
             });
+            Vector2 starPos = new Vector2(500, 325);
+            Vector2 endPos = new Vector2(500, 400);
+            if (xx.pos == starPos)
+            {
+                xx.isInEasing = true;
+            }
+            if (xx.isInEasing)
+            {
+                //  System.Console.WriteLine(xx.isInEasing);
+                time += dt;
+                if (time > duration)
+                {
+                    time = duration;
+                }
+                // System.Console.WriteLine(dt);
+                System.Console.WriteLine(time);
+                xx.pos = GFEasing.Ease2D(GFEasingEnum.OutBounce, time, duration, starPos, endPos);
+            }
         }
     }
 }

@@ -12,6 +12,7 @@ public static class LetterDomain
         letter.color = color;
         letter.fontSize = fontSize;
         letter.pathIndex = 0;
+        letter.isInEasing=false;
         letterRepo.Add(letter);
         return letter;
     }
@@ -44,6 +45,7 @@ public static class LetterDomain
         if (Vector2.DistanceSquared(target, letter.pos) <= 1f)
         {
             letter.pos = letter.path[letter.pathIndex];
+            letter.timer=0;
             letter.pathIndex += 1;
             System.Console.WriteLine("arrived");
         }

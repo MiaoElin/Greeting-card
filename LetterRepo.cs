@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System;
 public class LetterRepo
 {
     List<LetterEntity> all;
